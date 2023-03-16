@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:demo/button.dart';
 import 'package:demo/player.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,13 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   // player Variables
   double playerX = 0;
+
+
+  //missile Variables
+  double missileX=0;
+  double missileY=1;
+  double missileHeight =0;
+
   void moveLeft(){
     setState(() {
       if(playerX-0.1>-1){
@@ -29,9 +38,12 @@ class _HomepageState extends State<Homepage> {
     });
   }
   void fire(){
-    setState(() {
-      // playerX -= 0.1;
-    });
+    Timer.periodic(Duration(milliseconds: 50), (timer) {
+      setState(() {
+        missileHeight+=10;
+        missileY-=0.1;
+      });
+     });
   }
   @override
   Widget build(BuildContext context) {
@@ -45,6 +57,9 @@ class _HomepageState extends State<Homepage> {
         else if(event.isKeyPressed(LogicalKeyboardKey.arrowRight)){
           moveRight();
         }
+        else if(event.isKeyPressed(LogicalKeyboardKey.space)){
+          fire();
+        }
       },
       child: Column(
         children: [
@@ -55,6 +70,14 @@ class _HomepageState extends State<Homepage> {
               color: Colors.blue[50],
               child: Center(child: Stack(
                 children: [
+                  Container(
+                    alignment: Alignment(missileX,missileY),
+                    child: Container(
+                      width: 5,
+                      height: missileHeight,
+                      color: Colors.red,
+                    ),
+                  ),
                   MyPlayer(playerX:playerX),
                 ],
               )),
